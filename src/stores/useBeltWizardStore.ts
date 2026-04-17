@@ -1,16 +1,16 @@
 import { create } from "zustand";
 
-export type ApplicationMode = "unit_handling" | "bulk" | "food_hygiene" | "precision_indexing" | "";
+export type ApplicationMode = "unit_handling" | "bulk" | "food_hygiene" | "precision_indexing" | "unknown" | "";
 export type Industry = "logistics" | "food" | "pharma" | "workshop" | "waste" | "other" | "";
-export type QuotePurpose = "new_line" | "replacement" | "rebuild" | "";
-export type RouteType = "straight" | "incline_under_20" | "incline_above_20" | "curve" | "combination" | "";
-export type BeltFamily = "pvc" | "tpu" | "monolithic_tpu" | "modular_plastic" | "timing_belt" | "bulk_rubber" | "";
-export type BeltSurface = "smooth" | "grip" | "structured" | "fda_hygiene" | "antistatic" | "flame_retardant" | "";
-export type FrameMaterial = "aluminium" | "stainless_steel" | "painted_steel" | "";
-export type SupportType = "slide_bed" | "carrying_idlers" | "roller_support" | "";
-export type DrivePosition = "head_discharge" | "head_infeed" | "center_drive" | "drum_motor" | "";
-export type SpeedControl = "fixed" | "vfd" | "servo" | "";
-export type DutyType = "continuous" | "batch" | "shift_24_7" | "";
+export type QuotePurpose = "new_line" | "replacement" | "rebuild" | "unknown" | "";
+export type RouteType = "straight" | "incline_under_20" | "incline_above_20" | "curve" | "combination" | "unknown" | "";
+export type BeltFamily = "pvc" | "tpu" | "monolithic_tpu" | "modular_plastic" | "timing_belt" | "bulk_rubber" | "unknown" | "";
+export type BeltSurface = "smooth" | "grip" | "structured" | "fda_hygiene" | "antistatic" | "flame_retardant" | "unknown" | "";
+export type FrameMaterial = "aluminium" | "stainless_steel" | "painted_steel" | "unknown" | "";
+export type SupportType = "slide_bed" | "carrying_idlers" | "roller_support" | "unknown" | "";
+export type DrivePosition = "head_discharge" | "head_infeed" | "center_drive" | "drum_motor" | "unknown" | "";
+export type SpeedControl = "fixed" | "vfd" | "servo" | "unknown" | "";
+export type DutyType = "continuous" | "batch" | "shift_24_7" | "unknown" | "";
 export type ThroughputUnit = "stk/min" | "kg/h" | "t/h" | "m³/h";
 
 export interface BeltWizardState {
@@ -90,6 +90,10 @@ export interface BeltWizardState {
   contactPhone: string;
   companyName: string;
   openQuestions: string[];
+  capacityUnknown: boolean;
+  dimensionsUnknown: boolean;
+  additionalInfo: string;
+  attachmentNames: string[];
   setField: <K extends keyof BeltWizardState>(key: K, value: BeltWizardState[K]) => void;
   reset: () => void;
 }
@@ -112,6 +116,7 @@ const initialState: Omit<BeltWizardState, "setField" | "reset"> = {
   lockoutNeeds: false, riskAssessmentRequired: false, documentationLang: "nb-NO",
   quantity: 1, deliveryCountry: "NO", siteConditions: "", requestedDocs: ["GA_drawing"], attachments: [],
   deadline: "", contactName: "", contactEmail: "", contactPhone: "", companyName: "", openQuestions: [],
+  capacityUnknown: false, dimensionsUnknown: false, additionalInfo: "", attachmentNames: [],
 };
 
 export const useBeltWizardStore = create<BeltWizardState>((set) => ({

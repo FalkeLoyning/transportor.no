@@ -1,102 +1,85 @@
 import { create } from "zustand";
 
 export type ScrewMode = "conveyor" | "feeder" | "inclined" | "vertical" | "shaftless" | "mixing" | "";
-export type ShaftType = "shafted" | "shaftless" | "";
-export type FlightType = "single_flight" | "ribbon" | "cut" | "cut_folded" | "paddles" | "";
-export type PitchType = "standard" | "short_2_3D" | "half_1_2D" | "variable" | "";
-export type HousingType = "u_trough" | "tubular" | "flared" | "rectangular" | "";
-export type CoverType = "flanged" | "semi_flanged" | "flat" | "gasketed" | "";
-export type ConstructionMaterial = "carbon_steel" | "stainless_304" | "stainless_316" | "wear_alloy" | "";
+export type ShaftType = "shafted" | "shaftless" | "unknown" | "";
+export type FlightType = "single_flight" | "ribbon" | "cut" | "cut_folded" | "paddles" | "unknown" | "";
+export type PitchType = "standard" | "short_2_3D" | "half_1_2D" | "variable" | "unknown" | "";
+export type HousingStyle = "sealed" | "trough" | "unknown" | "";
+export type DriveCoupling = "spline" | "keyway" | "clamp_ring" | "driver" | "unknown" | "";
+export type DriveEnd = "inlet" | "discharge" | "unknown" | "";
+export type RotationDir = "cw" | "ccw" | "unknown" | "";
 
 export interface ScrewWizardState {
-  screwMode: ScrewMode;
-  quotePurpose: "new" | "replacement" | "";
+  /* 1. Purpose */
+  quotePurpose: "new" | "replacement" | "unknown" | "";
+  /* 2. Function */
+  screwMode: ScrewMode | "unknown";
+  /* 3. Material & duty */
   materialName: string;
-  bulkDensityKgM3: number | undefined;
-  capacityUnit: "kg/h" | "t/h" | "m³/h";
-  particleSizeMm: number | undefined;
-  lumpSizeMm: number | undefined;
-  flowability: "free" | "medium" | "sluggish" | "";
-  abrasiveness: "low" | "medium" | "high" | "";
-  corrosiveness: "low" | "medium" | "high" | "";
-  stickyStringy: boolean;
-  moisture: string;
-  temperatureC: number | undefined;
-  odorVapor: boolean;
-  atexMaterial: boolean;
-  unknownMaterial: boolean;
-  requiredCapacity: number | undefined;
-  turndownRatio: number;
-  batchOrContinuous: "batch" | "continuous" | "";
-  feedAccuracy: "low" | "medium" | "high" | "";
+  materialUnknown: boolean;
+  batchOrContinuous: "batch" | "continuous" | "unknown" | "";
   surgeLoads: boolean;
-  centerlineLengthMm: number | undefined;
-  inclineAngleDeg: number | undefined;
-  inletElevationMm: number | undefined;
-  dischargeElevationMm: number | undefined;
-  installationSpace: string;
-  leftOrRightHand: "left" | "right" | "";
-  rotationIfKnown: "cw" | "ccw" | "";
+  /* 4. Abrasiveness */
+  abrasiveness: "low" | "medium" | "high" | "unknown" | "";
+  /* 5. Corrosiveness */
+  corrosiveness: "low" | "medium" | "high" | "unknown" | "";
+  /* 6. Shaft */
   shaftType: ShaftType;
+  /* 7. Flight type */
   flightType: FlightType;
+  /* 8. Shaft diameter */
+  shaftDiameterMm: number | undefined;
+  shaftDiameterUnknown: boolean;
+  /* 9. Screw outer diameter */
+  screwOuterDiameterMm: number | undefined;
+  screwOuterDiameterUnknown: boolean;
+  /* 10. Pitch */
+  pitchMm: number | undefined;
   pitchType: PitchType;
-  diameterKnown: number | undefined;
-  speedKnown: number | undefined;
-  housingType: HousingType;
-  coverType: CoverType;
-  linerRequired: boolean;
-  accessHatches: boolean;
-  continuousWeld: boolean;
-  inletCount: number;
-  inletPositions: string;
-  outletCount: number;
-  outletPositions: string;
-  slideGates: boolean;
-  endBearings: boolean;
-  hangerBearings: boolean;
-  inspectionPorts: boolean;
-  gearReducerMotor: boolean;
-  driveSide: "inlet" | "discharge" | "";
-  torqueArm: boolean;
-  vfd: boolean;
-  starterType: string;
-  reverse: boolean;
-  efficiencyIfKnown: number | undefined;
-  constructionMaterial: ConstructionMaterial;
-  shaftMaterial: string;
-  finish: string;
-  foodContact: boolean;
-  atexZone: string;
-  venting: boolean;
-  guarding: string;
-  manuals: boolean;
-  quantity: number;
-  deliveryCountry: string;
-  contactName: string;
-  contactEmail: string;
-  contactPhone: string;
-  companyName: string;
-  deadline: string;
-  openQuestions: string[];
+  /* 11. Length */
+  screwLengthMm: number | undefined;
+  screwLengthUnknown: boolean;
+  /* 12. Drive end */
+  driveCoupling: DriveCoupling;
+  driveEnd: DriveEnd;
+  /* 13. Bearing end */
+  bearingSizeMm: number | undefined;
+  bearingSizeUnknown: boolean;
+  /* 14. Rotation direction */
+  rotationDirection: RotationDir;
+  /* 15. Capacity */
+  requiredCapacity: number | undefined;
+  capacityUnit: "kg/h" | "t/h" | "m³/h";
+  capacityUnknown: boolean;
+  /* 16. Housing */
+  housingStyle: HousingStyle;
+  /* 17. Other info */
+  additionalInfo: string;
+  attachmentNames: string[];
+
+  /* Utility */
   setField: <K extends keyof ScrewWizardState>(key: K, value: ScrewWizardState[K]) => void;
   reset: () => void;
 }
 
 const initialState: Omit<ScrewWizardState, "setField" | "reset"> = {
-  screwMode: "", quotePurpose: "", materialName: "", bulkDensityKgM3: undefined, capacityUnit: "kg/h",
-  particleSizeMm: undefined, lumpSizeMm: undefined, flowability: "", abrasiveness: "", corrosiveness: "",
-  stickyStringy: false, moisture: "", temperatureC: undefined, odorVapor: false, atexMaterial: false, unknownMaterial: false,
-  requiredCapacity: undefined, turndownRatio: 1.0, batchOrContinuous: "", feedAccuracy: "", surgeLoads: false,
-  centerlineLengthMm: undefined, inclineAngleDeg: undefined, inletElevationMm: undefined, dischargeElevationMm: undefined,
-  installationSpace: "", leftOrRightHand: "", rotationIfKnown: "",
-  shaftType: "", flightType: "", pitchType: "", diameterKnown: undefined, speedKnown: undefined,
-  housingType: "", coverType: "", linerRequired: false, accessHatches: false, continuousWeld: false,
-  inletCount: 1, inletPositions: "", outletCount: 1, outletPositions: "",
-  slideGates: false, endBearings: true, hangerBearings: false, inspectionPorts: false,
-  gearReducerMotor: true, driveSide: "", torqueArm: false, vfd: false, starterType: "", reverse: false, efficiencyIfKnown: undefined,
-  constructionMaterial: "", shaftMaterial: "C1045", finish: "", foodContact: false, atexZone: "", venting: false,
-  guarding: "", manuals: true, quantity: 1, deliveryCountry: "NO",
-  contactName: "", contactEmail: "", contactPhone: "", companyName: "", deadline: "", openQuestions: [],
+  quotePurpose: "",
+  screwMode: "",
+  materialName: "", materialUnknown: false,
+  batchOrContinuous: "", surgeLoads: false,
+  abrasiveness: "", corrosiveness: "",
+  shaftType: "",
+  flightType: "",
+  shaftDiameterMm: undefined, shaftDiameterUnknown: false,
+  screwOuterDiameterMm: undefined, screwOuterDiameterUnknown: false,
+  pitchMm: undefined, pitchType: "",
+  screwLengthMm: undefined, screwLengthUnknown: false,
+  driveCoupling: "", driveEnd: "",
+  bearingSizeMm: undefined, bearingSizeUnknown: false,
+  rotationDirection: "",
+  requiredCapacity: undefined, capacityUnit: "kg/h", capacityUnknown: false,
+  housingStyle: "",
+  additionalInfo: "", attachmentNames: [],
 };
 
 export const useScrewWizardStore = create<ScrewWizardState>((set) => ({

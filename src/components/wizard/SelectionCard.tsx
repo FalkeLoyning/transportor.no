@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
 
 interface SelectionCardProps { icon: React.ReactNode; title: string; description?: string; selected: boolean; recommended?: boolean; onClick: () => void; disabled?: boolean; }
 
@@ -17,6 +18,11 @@ export function SelectionCard({ icon, title, description, selected, recommended,
       )}
     >
       {recommended && <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold text-background">Anbefalt</span>}
+      {selected && (
+        <div className="absolute top-2 right-2 h-5 w-5 rounded-full bg-accent flex items-center justify-center">
+          <Check className="h-3 w-3 text-background" />
+        </div>
+      )}
       {icon && <div className={cn("text-3xl", selected ? "text-accent" : "text-foreground/60")}>{icon}</div>}
       <div>
         <div className={cn("font-medium text-sm", selected ? "text-accent" : "text-foreground")}>{title}</div>

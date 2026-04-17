@@ -1,14 +1,21 @@
 "use client";
 import { WizardShell } from "@/components/wizard/WizardShell";
-import { ApplicationStep } from "./steps/ApplicationStep";
+import { PurposeStep } from "./steps/PurposeStep";
 import { MaterialStep } from "./steps/MaterialStep";
-import { CapacityStep } from "./steps/CapacityStep";
-import { GeometryStep } from "./steps/GeometryStep";
-import { BeltStep } from "./steps/BeltStep";
-import { FrameStep } from "./steps/FrameStep";
-import { DriveStep } from "./steps/DriveStep";
-import { SafetyStep } from "./steps/SafetyStep";
-import { ReviewStep } from "./steps/ReviewStep";
+import { ApplicationStep } from "./steps/ApplicationStep";
+import { DutyStep } from "./steps/DutyStep";
+import { ThroughputStep } from "./steps/ThroughputStep";
+import { RouteTypeStep } from "./steps/RouteTypeStep";
+import { DimensionsStep } from "./steps/DimensionsStep";
+import { BeltFamilyStep } from "./steps/BeltFamilyStep";
+import { BeltSurfaceStep } from "./steps/BeltSurfaceStep";
+import { BeltExtrasStep } from "./steps/BeltExtrasStep";
+import { FrameMaterialStep } from "./steps/FrameMaterialStep";
+import { SupportTypeStep } from "./steps/SupportTypeStep";
+import { FrameExtrasStep } from "./steps/FrameExtrasStep";
+import { DrivePositionStep } from "./steps/DrivePositionStep";
+import { SpeedControlStep } from "./steps/SpeedControlStep";
+import { BeltOtherInfoStep } from "./steps/BeltOtherInfoStep";
 import dynamic from "next/dynamic";
 
 const BeltConveyorPreview = dynamic(
@@ -17,20 +24,30 @@ const BeltConveyorPreview = dynamic(
 );
 
 const steps = [
-  { id: "application", title: "Applikasjon", description: "Type og bransje" },
-  { id: "material", title: "Materiale", description: "Produkt/bulkdata" },
-  { id: "capacity", title: "Kapasitet", description: "Ytelse og drift" },
-  { id: "geometry", title: "Geometri", description: "Mål og layout" },
-  { id: "belt", title: "Belte", description: "Type og overflate" },
-  { id: "frame", title: "Ramme", description: "Konstruksjon" },
-  { id: "drive", title: "Drivverk", description: "Motor og styring" },
-  { id: "safety", title: "Sikkerhet", description: "Sertifisering" },
-  { id: "review", title: "Oppsummering", description: "Send forespørsel" },
+  { id: "purpose", title: "Formål", description: "Nytt eller erstatning?" },
+  { id: "material", title: "Materiale", description: "Hva skal flyttes?" },
+  { id: "application", title: "Applikasjon", description: "Type håndtering" },
+  { id: "duty", title: "Driftsform", description: "Kontinuerlig eller batch?" },
+  { id: "throughput", title: "Kapasitet", description: "Mengde og hastighet" },
+  { id: "route", title: "Rutetype", description: "Rett, helning eller kurve?" },
+  { id: "dimensions", title: "Dimensjoner", description: "Mål og vinkler" },
+  { id: "belt-family", title: "Belttype", description: "PVC, TPU, modulbånd?" },
+  { id: "belt-surface", title: "Overflate", description: "Glatt, grip, hygiene?" },
+  { id: "belt-extras", title: "Belttillegg", description: "Medbringere, sidevegger?" },
+  { id: "frame-material", title: "Ramme", description: "Aluminium, stål, rustfritt?" },
+  { id: "support", title: "Understøttelse", description: "Gliseng eller ruller?" },
+  { id: "frame-extras", title: "Rammeutstyr", description: "Stativ, sidekanter, deksler?" },
+  { id: "drive-position", title: "Driv", description: "Hode, senter, trommel?" },
+  { id: "speed-control", title: "Hastighet", description: "Fast, VFD eller servo?" },
+  { id: "other", title: "Annet", description: "Info, bilder, kontakt" },
 ];
 
 const stepComponents = [
-  ApplicationStep, MaterialStep, CapacityStep, GeometryStep,
-  BeltStep, FrameStep, DriveStep, SafetyStep, ReviewStep,
+  PurposeStep, MaterialStep, ApplicationStep, DutyStep,
+  ThroughputStep, RouteTypeStep, DimensionsStep,
+  BeltFamilyStep, BeltSurfaceStep, BeltExtrasStep,
+  FrameMaterialStep, SupportTypeStep, FrameExtrasStep,
+  DrivePositionStep, SpeedControlStep, BeltOtherInfoStep,
 ];
 
 export default function BeltConveyorPage() {

@@ -1,68 +1,56 @@
 "use client";
 import { useBeltWizardStore } from "@/stores/useBeltWizardStore";
+import { SelectionCard } from "@/components/wizard/SelectionCard";
 import { Input } from "@/components/ui/input";
+import { Package, Wheat, Mountain, Apple, Pill, Recycle, FlaskConical, HelpCircle } from "lucide-react";
+
+const materials = [
+  { value: "kartong", label: "Kartonger / kasser", desc: "Esker, pakker, kartonger", icon: <Package className="h-8 w-8" /> },
+  { value: "korn", label: "Korn / frø", desc: "Hvete, bygg, mais, raps", icon: <Wheat className="h-8 w-8" /> },
+  { value: "sand", label: "Sand / grus / stein", desc: "Aggregater, malm, mineraler", icon: <Mountain className="h-8 w-8" /> },
+  { value: "mat", label: "Matvarer", desc: "Fisk, kjøtt, grønnsaker, bakeri", icon: <Apple className="h-8 w-8" /> },
+  { value: "farma", label: "Farma / medisinsk", desc: "Tabletter, ampuller, poser", icon: <Pill className="h-8 w-8" /> },
+  { value: "avfall", label: "Avfall / resirk.", desc: "Sortering, gjenvinning", icon: <Recycle className="h-8 w-8" /> },
+  { value: "kjemikalie", label: "Kjemikalier", desc: "Pulver, granulat, væsker", icon: <FlaskConical className="h-8 w-8" /> },
+  { value: "unknown", label: "Vet ikke", desc: "Trenger rådgivning", icon: <HelpCircle className="h-8 w-8" /> },
+] as const;
 
 export function MaterialStep() {
   const s = useBeltWizardStore();
-  const isBulk = s.applicationMode === "bulk";
-
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-semibold text-foreground">
-        {isBulk ? "Bulkmateriale" : "Produkt / Enhet"}
-      </h3>
-
-      {isBulk ? (
-        <div className="space-y-4">
-          <Input label="Materialenavn" value={s.materialName} onChange={(v) => s.setField("materialName", v)} placeholder="F.eks. hvete, sand, sement" />
-          <div className="grid grid-cols-2 gap-4">
-            <Input label="Bulkdensitet (kg/m³)" type="number" value={s.bulkDensityKgM3?.toString() ?? ""} onChange={(v) => s.setField("bulkDensityKgM3", v ? Number(v) : undefined)} />
-            <Input label="Partikkelstørrelse (mm)" type="number" value={s.particleSizeMm?.toString() ?? ""} onChange={(v) => s.setField("particleSizeMm", v ? Number(v) : undefined)} />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <Input label="Klumpstørrelse (mm)" type="number" value={s.lumpSizeMm?.toString() ?? ""} onChange={(v) => s.setField("lumpSizeMm", v ? Number(v) : undefined)} />
-            <Input label="Temperatur (°C)" type="number" value={s.materialTemperatureC?.toString() ?? ""} onChange={(v) => s.setField("materialTemperatureC", v ? Number(v) : undefined)} />
-          </div>
-          <div className="flex flex-wrap gap-4">
-            {[
-              { key: "materialSticky" as const, label: "Klebrig" },
-              { key: "materialDusty" as const, label: "Støvende" },
-              { key: "materialAbrasive" as const, label: "Abrasivt" },
-              { key: "materialCorrosive" as const, label: "Korrosivt" },
-            ].map(({ key, label }) => (
-              <label key={key} className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
-                <input type="checkbox" checked={s[key]} onChange={(e) => s.setField(key, e.target.checked)}
-                  className="rounded border-white/20 bg-surface" />
-                {label}
-              </label>
-            ))}
-          </div>
-          <label className="flex items-center gap-2 text-sm text-muted cursor-pointer">
-            <input type="checkbox" checked={s.unknownMaterial} onChange={(e) => s.setField("unknownMaterial", e.target.checked)} className="rounded border-white/20 bg-surface" />
-            Ukjent materiale – trenger rådgivning
-          </label>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          <Input label="Produktnavn" value={s.productName} onChange={(v) => s.setField("productName", v)} placeholder="F.eks. kartong, flaske" />
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Input label="Lengde (mm)" type="number" value={s.productLengthMm?.toString() ?? ""} onChange={(v) => s.setField("productLengthMm", v ? Number(v) : undefined)} />
-            <Input label="Bredde (mm)" type="number" value={s.productWidthMm?.toString() ?? ""} onChange={(v) => s.setField("productWidthMm", v ? Number(v) : undefined)} />
-            <Input label="Høyde (mm)" type="number" value={s.productHeightMm?.toString() ?? ""} onChange={(v) => s.setField("productHeightMm", v ? Number(v) : undefined)} />
-            <Input label="Vekt (kg)" type="number" value={s.productWeightKg?.toString() ?? ""} onChange={(v) => s.setField("productWeightKg", v ? Number(v) : undefined)} />
-          </div>
-          <div className="flex flex-wrap gap-4">
-            <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
-              <input type="checkbox" checked={s.orientationCritical} onChange={(e) => s.setField("orientationCritical", e.target.checked)} className="rounded border-white/20 bg-surface" />
-              Orientering er kritisk
-            </label>
-            <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
-              <input type="checkbox" checked={s.accumulationAllowed} onChange={(e) => s.setField("accumulationAllowed", e.target.checked)} className="rounded border-white/20 bg-surface" />
-              Akkumulering tillatt
-            </label>
-          </div>
-        </div>
-      )}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {materials.map((m) => (
+          <SelectionCard
+            key={m.value}
+            icon={m.icon}
+            title={m.label}
+            description={m.desc}
+            selected={m.value === "unknown" ? s.unknownMaterial : s.materialName === m.value}
+            onClick={() => {
+              if (m.value === "unknown") {
+                s.setField("unknownMaterial", true);
+                s.setField("materialName", "");
+                s.setField("productName", "");
+              } else {
+                s.setField("unknownMaterial", false);
+                s.setField("materialName", m.value);
+                s.setField("productName", m.value);
+              }
+            }}
+          />
+        ))}
+      </div>
+      <Input
+        label="Eller beskriv materialet"
+        value={s.unknownMaterial ? "" : (materials.some((m) => m.value === s.materialName) ? "" : s.materialName)}
+        onChange={(v) => {
+          s.setField("materialName", v);
+          s.setField("productName", v);
+          s.setField("unknownMaterial", false);
+        }}
+        placeholder="F.eks. plastflasker, tørrfisk, aluminiumsprofiler …"
+      />
     </div>
   );
 }
